@@ -1,0 +1,76 @@
+---
+
+- name: Gather Undercloud facts
+  setup:
+  delegate_to: "{{ groups['undercloud'][0] }}"
+  delegate_facts: True
+
+- block:
+    - name: Install requirements for pip virtualenv
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - 'python-devel'
+        - 'python-setuptools'
+        - 'gcc'
+        - 'libffi-devel'
+
+    - name: Install pip package
+      easy_install:
+        name: pip
+
+    - name: Delete existing venv if exists
+      file:
+        path: "{{ venv_path }}"
+        state: absent
+
+    - name: Install virtualenv
+      pip:
+        name: virtualenv
+        version: '15.1.0'
+  become: true
+
+- name: Create virtualenv
+  pip:
+    name: "{{ item.key }}"
+    version: "{{ item.value }}"
+    virtualenv: "{{ venv_path }}"
+  with_dict:
+    pip: '9.0.1'
+    setuptools: '38.2.4'
+    pytz: '2017.3'
+    shade: '1.25.0'
+
+- name: Fetch private key from the undercloud host
+  fetch:
+    src: "/home/stack/.ssh/id_rsa"
+    dest: "{{ overcloud_private_key }}"
+    flat: yes
+
+- name: Set SSH key permissions
+  file:
+    path: "{{ overcloud_private_key }}"
+    mode: 0600
+  delegate_to: localhost
+
+- name: Grab auth data from stackrc file and publish it as YAML
+  ### ToDo(MaximB): Convert the task to more generic execution.
+  ###               Implement reuse.
+  shell: |
+      source "{{ rc_file_path | default('/home/stack/stackrc') }}"
+      echo "
+      auth_url: $OS_AUTH_URL
+      username: $OS_USERNAME
+      password: $OS_PASSWORD
+      project_name: ${OS_PROJECT_NAME:-$OS_TENANT_NAME}
+      "
+  register: creds
+
+- name: Gather Overcloud nodes data
+  vars:
+    ansible_python_interpreter: "/tmp/ansible_venv/bin/python"
+  os_server_facts:
+    auth: "{{ creds.stdout | from_yaml }}"
+    # Required for SSL
+    validate_certs: no
