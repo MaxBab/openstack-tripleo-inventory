@@ -132,3 +132,6 @@ With password:
 ```
 ansible-playbook playbooks/tripleo/post_install/tripleo_inventory.yml -e host=undercloud-host-fqdn/ip -e user=root -e ssh_pass=undercloud_password
 ```
+
+## License
+MIT
