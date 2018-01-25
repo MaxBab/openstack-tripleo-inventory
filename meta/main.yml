@@ -4,7 +4,7 @@ dependencies: []
 galaxy_info:
   author: "Maxim Babushkin"
   description: Ansible role creates inventory file for OpenStack TripleO environment
-  license: MIT
+  license: Apache
   min_ansible_version: 2.4
   platforms:
     - name: EL
