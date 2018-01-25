@@ -134,4 +134,4 @@ ansible-playbook playbooks/tripleo/post_install/tripleo_inventory.yml -e host=un
 ```
 
 ## License
-MIT
+Apache
