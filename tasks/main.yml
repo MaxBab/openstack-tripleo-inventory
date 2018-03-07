@@ -31,7 +31,7 @@
 - name: Add baremetal Undercloud to host list
   add_host:
     name: "undercloud-0"
-    groups: "undercloud,tester"
+    groups: "{{ undercloud_groups }}"
     ansible_ssh_host: "{{ host }}"
     ansible_ssh_user: "{{ user | default('stack') }}"
     ansible_ssh_private_key_file: "{{ ssh_key | default(omit) }}"
@@ -39,7 +39,7 @@
   when: setup_type == 'baremetal'
 
 - name: Locate virt Undercloud and add to host list
-  include: hypervisor.yml
+  include_tasks: hypervisor.yml
   when: setup_type == 'virt'
 
 - name: Generate Inventory file
@@ -50,23 +50,23 @@
     dest: "{{ environment_dir }}/inventory_{{ host }}"
 
 - name: Generate and set an SSH key if password is used
-  include: undercloud_pass.yml
+  include_tasks: undercloud_pass.yml
   when: ssh_pass is defined
 
 - name: Create TripleO inventory
-  include: overcloud_nodes.yml
+  include_tasks: overcloud_nodes.yml
   delegate_to: "{{ groups['undercloud'] | first }}"
 
 - name: Add hosts to host list
   add_host:
-      name: "{{ item.name }}"
-      groups: "{{ ( item.name in groups.all ) | ternary(omit,
-          ['overcloud_nodes', 'openstack_nodes', item.name.split('-')[0]] | join(',')
-         ) }}"
-      ansible_ssh_user: "{{ overcloud_user }}"
-      ansible_ssh_pass: ""
-      ansible_ssh_host: "{{ item.accessIPv4 }}"
-      ansible_ssh_private_key_file: "{{ overcloud_private_key }}"
+    name: "{{ item.name }}"
+    groups: "{{ ( item.name in groups.all ) | ternary(omit,
+        ['overcloud_nodes', 'openstack_nodes', item.name.split('-')[0]] | join(',')
+       ) }}"
+    ansible_ssh_user: "{{ overcloud_user }}"
+    ansible_ssh_pass: ""
+    ansible_ssh_host: "{{ item.accessIPv4 }}"
+    ansible_ssh_private_key_file: "{{ overcloud_private_key }}"
   with_items: "{{ openstack_servers }}"
 
 - name: Enable SSH forwarding using Undercloud node for baremetal Overcloud nodes
