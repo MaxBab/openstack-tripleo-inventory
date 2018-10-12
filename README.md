@@ -132,6 +132,12 @@ Multiple groups should be separated by the comma.
 hypervisor_groups: hypervisor
 ```
 
+If true, create an inventory file for the undercloud environment only.  
+Default value is set to - false
+```
+undercloud_only: true
+```
+
 
 ***
 ## Examples
