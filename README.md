@@ -144,16 +144,16 @@ undercloud_only: true
 ## Examples
 The example of running the TripleO Inventory playbook.  
 With SSH key file for baremetal environment:
-```
+```yaml
 ansible-playbook playbooks/tripleo/post_install/tripleo_inventory.yml -e host=undercloud-host-fqdn/ip -e ssh_key=/path/to/ssh/private/file -e setup_type=baremetal
 ```
 With SSH key file for hybrid or virt environment:
-```
+```yaml
 ansible-playbook playbooks/tripleo/post_install/tripleo_inventory.yml -e host=undercloud-host-fqdn/ip -e user=root -e ssh_key=/path/to/ssh/private/file -e setup_type=virt
 ```
 
 With password:
-```
+```yaml
 ansible-playbook playbooks/tripleo/post_install/tripleo_inventory.yml -e host=undercloud-host-fqdn/ip -e user=root -e ssh_pass=undercloud_password
 ```
 
