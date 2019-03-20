@@ -52,7 +52,7 @@ The play could be run in two available scenarios:
 
 Inventory - Will hold the Undercloud node and all Overcloud nodes located within the environment.  
 Ansible.ssh.config - SSH config file. Allow to connect to the overcloud nodes from the localhost.
-```
+```yaml
 For example:
 ssh -F ansible.ssh.config controller-0
 ```
@@ -64,63 +64,64 @@ Id_rsa_undercloud.pub - Public key of the id_rsa_undercloud.
 ***
 ## Play variables
 Provide the type of the environment.  
-Default: 'baremetal'  
+Default: 'baremetal'
+Allowed variables: ['baremetal', 'virt']   
 Mandatory variable.
-```
-setup_type
+```yaml
+setup_type: baremetal
 ```
 
 Provide the undercloud host.  
 Mandatory variable.
-```
-host
+```yaml
+host: hostname
 ```
 
 Provide the user for the undercloud.  
 Default user: 'stack'.  
 Not mandatory variable.
-```
+```yaml
 user: stack
 ```
 
 Specify the Undercloud ssh private key file.  
 The public key should already be copied to the undercloud host.  
 One of two parameters should be provided: ssh_key or ssh_pass.
-```
-ssh_key
+```yaml
+ssh_key: /path/to/the/ssh_key
 ```
 
 Specify the password for the Undercloud host.  
 Use this variable in case there is no your public key on the Undercloud host.  
 One of two parameters should be provided: ssh_key or ssh_pass.
-```
-ssh_pass
+```yaml
+ssh_pass: pass
 ```
 
 Overcloud user. The user which has an access to the overcloud nodes.  
 Default: 'heat-admin'.
-```
+```yaml
 overcloud_user: heat-admin
 ```
 
 RC file path.  
 Default: '/home/stack/stackrc'.
-```
-rc_file_path
+```yaml
+rc_file_path: /home/stack/stackrc
 ```
 
 Define custom undercloud user if required.  
 By default the variable is not used.  
 Default value is - stack.
-```
-custom_undercloud_user
+```yaml
+custom_undercloud_user: stack
 ```
 
 Undercloud could be used for various tasks like tester or something else.  
 The tasks could use inventory groups.  
 Define the groups, Undercloud host should be added to.  
 Multiple groups should be separated by the comma.
-```
+```yaml
 undercloud_groups: undercloud,tester
 ```
 
@@ -128,13 +129,13 @@ In case of hybrid deployment is used, various groups could be assigned to the hy
 The tasks could use inventory groups.  
 Define the groups, Hypervisor host should be added to.  
 Multiple groups should be separated by the comma.
-```
+```yaml
 hypervisor_groups: hypervisor
 ```
 
 If true, create an inventory file for the undercloud environment only.  
 Default value is set to - false
-```
+```yaml
 undercloud_only: true
 ```
 
